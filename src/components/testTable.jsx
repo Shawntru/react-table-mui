@@ -7,44 +7,21 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 
 import { useTable } from 'react-table';
+import dataInterface from '../data/dataInterface';
 import data from '../data/mockData.json';
 
 function TestTable() {
     const columns = useMemo(
         () => [
             {
-                Header: 'Name',
-                columns: [
-                    {
-                        Header: 'First Name',
-                        accessor: 'firstName',
-                    },
-                    {
-                        Header: 'Last Name',
-                        accessor: 'lastName',
-                    },
-                ],
-            },
-            {
-                Header: 'Info',
-                columns: [
-                    {
-                        Header: 'Age',
-                        accessor: 'age',
-                    },
-                    {
-                        Header: 'Visits',
-                        accessor: 'visits',
-                    },
-                    {
-                        Header: 'Status',
-                        accessor: 'status',
-                    },
-                    {
-                        Header: 'Profile Progress',
-                        accessor: 'progress',
-                    },
-                ],
+                Header: 'Shipment Info',
+                // only for PoC, so I don't have write 80 explicit columns
+                columns: dataInterface.map((keyName) => {
+                    return {
+                        Header: keyName,
+                        accessor: keyName,
+                    };
+                }),
             },
         ],
         []

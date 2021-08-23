@@ -1,0 +1,25 @@
+const dataInterface = [
+    'freightProviderNumber',
+    'shipmentStatus',
+    'index',
+    'guid',
+    'isActive',
+    'balance',
+    'age',
+    'eyeColor',
+    'name',
+    'gender',
+    'company',
+    'email',
+    'phone',
+    'origin',
+    'destination',
+    'originName',
+    'destinationName',
+    'about',
+    'originEta',
+    'latitude',
+    'longitude',
+];
+
+export default dataInterface;
