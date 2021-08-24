@@ -1,6 +1,6 @@
 # React-table v7 and MUI PoC
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app). Its purpose is to explore the relationship between `react-table` v7.x with MUI. 
 
 ## Available Scripts
 
