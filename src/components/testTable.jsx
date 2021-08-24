@@ -11,7 +11,7 @@ import {
 import { makeStyles } from '@material-ui/core/styles';
 import { useResizeColumns, useTable, useBlockLayout } from 'react-table';
 import dataInterface from '../data/dataInterface';
-import data from '../data/mockData.json';
+import mockData from '../data/mockData.json';
 
 const useStyles = makeStyles((theme) => {
     return {
@@ -53,8 +53,6 @@ const useStyles = makeStyles((theme) => {
             top: '0',
             transform: 'translateX(50%)',
             zIndex: '1',
-            // prevents from scrolling while dragging on touch devices
-            TouchEvent: 'none',
         },
         isResizing: {
             background: 'blue',
@@ -64,6 +62,10 @@ const useStyles = makeStyles((theme) => {
 
 function TestTable() {
     const classes = useStyles();
+
+    // use this to adjust the length in rows of the rendered table for expirimentation. 200 is the max.
+    // Table starts to get laggy at above ~50 rows.
+    const data = mockData.slice(0, 200)
 
     // this is the default sizing for each column on render
     // these could be adjusted or even saved and then applied from user prefs
