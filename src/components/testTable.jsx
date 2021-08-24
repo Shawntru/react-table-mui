@@ -83,7 +83,7 @@ function TestTable() {
         () => [
             {
                 Header: 'Shipment Info',
-                // only for PoC, so I don't have write 20 explicit columns
+                // only for PoC, so I don't have to write 20 explicit columns
                 columns: dataInterface.map((keyName) => {
                     return {
                         Header: keyName,
@@ -95,9 +95,9 @@ function TestTable() {
         []
     );
 
-    // use the state and functions returned from useTable to build the UI
-    // useResizeColumns enables use of draggable resizing columns, along with defaultColumn
-    // to define the inital sizing and spacing
+    // use the functions returned from useTable to build the UI
+    // useResizeColumns enables use of resizing columns, along with defaultColumn
+    // to define the initial sizing and spacing
     const {
         getTableProps,
         headerGroups,
@@ -128,7 +128,7 @@ function TestTable() {
                                     {/* Use column.getResizerProps to hook up the events correctly */}
                                     <div
                                         {...column.getResizerProps()}
-                                        // use clsx to apply the resizer class, and also the isResizing class is actively resizing
+                                        // use clsx to apply the resizer class, and also the isResizing class if actively resizing
                                         className={clsx({
                                             [classes.resizer]: true,
                                             [classes.isResizing]: column.isResizing,
