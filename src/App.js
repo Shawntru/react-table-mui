@@ -1,12 +1,12 @@
 import './App.css';
-import CssBaseline from '@material-ui/core/CssBaseline';
 
 import TestTable from './components/testTable';
 
 function App() {
     return (
-        <div>
-            <CssBaseline />
+        <div style={{
+            padding: '25px'
+        }}>
             <TestTable />
         </div>
     );
