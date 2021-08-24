@@ -65,7 +65,7 @@ function TestTable() {
 
     // use this to adjust the length in rows of the rendered table for expirimentation. 200 is the max.
     // Table starts to get laggy at above ~50 rows.
-    const data = mockData.slice(0, 200)
+    const data = mockData.slice(0, 200);
 
     // this is the default sizing for each column on render
     // these could be adjusted or even saved and then applied from user prefs
@@ -119,6 +119,7 @@ function TestTable() {
         <TableContainer className={classes.shipmentsTableWrapper}>
             <button onClick={resetResizing}>Reset Resizing</button>
             <MaUTable {...getTableProps()}>
+
                 <TableHead className={classes.tableHeader}>
                     {headerGroups.map((headerGroup) => (
                         <TableRow {...headerGroup.getHeaderGroupProps()}>
@@ -139,6 +140,7 @@ function TestTable() {
                         </TableRow>
                     ))}
                 </TableHead>
+
                 <TableBody {...getTableBodyProps()}>
                     {rows.map((row, i) => {
                         prepareRow(row);
@@ -161,6 +163,7 @@ function TestTable() {
                         );
                     })}
                 </TableBody>
+
             </MaUTable>
         </TableContainer>
     );
