@@ -4,9 +4,7 @@ import TestTable from './components/testTable';
 
 function App() {
     return (
-        <div style={{
-            padding: '25px'
-        }}>
+        <div style={{ padding: '25px' }}>
             <TestTable />
         </div>
     );

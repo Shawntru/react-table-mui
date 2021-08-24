@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import clsx from 'clsx';
 import {
     Table as MaUTable,
     TableBody,
@@ -8,7 +9,7 @@ import {
     TableContainer,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { useTable } from 'react-table';
+import { useResizeColumns, useTable, useBlockLayout } from 'react-table';
 import dataInterface from '../data/dataInterface';
 import data from '../data/mockData.json';
 
@@ -19,6 +20,7 @@ const useStyles = makeStyles((theme) => {
             height: '90vh',
             border: '2px solid rgba(0,0,0,.18)',
             overflow: 'scroll',
+            display: 'inline-block',
         },
         tableHeader: {
             fontSize: '12px',
@@ -35,12 +37,44 @@ const useStyles = makeStyles((theme) => {
             whiteSpace: 'nowrap',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
+            border: '1px solid rgba(0, 0, 0, 0.1)',
+            padding: '0.75rem',
+            // using absolute position resizer, this is needed to accurately space the column cells
+            position: 'relative',
+        },
+        resizer: {
+            display: 'inline-block',
+            background: 'grey',
+            width: '7px',
+            radius: '50%',
+            height: '100%',
+            position: 'absolute',
+            right: '0',
+            top: '0',
+            transform: 'translateX(50%)',
+            zIndex: '1',
+            // prevents from scrolling while dragging on touch devices
+            TouchEvent: 'none',
+        },
+        isResizing: {
+            background: 'blue',
         },
     };
 });
 
 function TestTable() {
     const classes = useStyles();
+
+    // this is the default sizing for each column on render
+    // these could be adjusted or even saved and then applied from user prefs
+    const defaultColumn = React.useMemo(
+        () => ({
+            minWidth: 30,
+            width: 125,
+            maxWidth: 400,
+        }),
+        []
+    );
 
     // memoize the data so we aren't rerendering on table adjustments
     const columns = useMemo(
@@ -60,13 +94,28 @@ function TestTable() {
     );
 
     // use the state and functions returned from useTable to build the UI
-    const { getTableProps, headerGroups, rows, prepareRow } = useTable({
-        columns,
-        data,
-    });
+    // useResizeColumns enables use of draggable resizing columns, along with defaultColumn
+    // to define the inital sizing and spacing
+    const {
+        getTableProps,
+        headerGroups,
+        rows,
+        prepareRow,
+        getTableBodyProps,
+        resetResizing,
+    } = useTable(
+        {
+            columns,
+            data,
+            defaultColumn,
+        },
+        useBlockLayout,
+        useResizeColumns
+    );
 
     return (
         <TableContainer className={classes.shipmentsTableWrapper}>
+            <button onClick={resetResizing}>Reset Resizing</button>
             <MaUTable {...getTableProps()}>
                 <TableHead className={classes.tableHeader}>
                     {headerGroups.map((headerGroup) => (
@@ -74,12 +123,21 @@ function TestTable() {
                             {headerGroup.headers.map((column) => (
                                 <TableCell {...column.getHeaderProps()}>
                                     {column.render('Header')}
+                                    {/* Use column.getResizerProps to hook up the events correctly */}
+                                    <div
+                                        {...column.getResizerProps()}
+                                        // use clsx to apply the resizer class, and also the isResizing class is actively resizing
+                                        className={clsx({
+                                            [classes.resizer]: true,
+                                            [classes.isResizing]: column.isResizing,
+                                        })}
+                                    />
                                 </TableCell>
                             ))}
                         </TableRow>
                     ))}
                 </TableHead>
-                <TableBody>
+                <TableBody {...getTableBodyProps()}>
                     {rows.map((row, i) => {
                         prepareRow(row);
                         return (
@@ -89,7 +147,10 @@ function TestTable() {
                             >
                                 {row.cells.map((cell) => {
                                     return (
-                                        <TableCell className={classes.tableCell} {...cell.getCellProps()}>
+                                        <TableCell
+                                            className={classes.tableCell}
+                                            {...cell.getCellProps()}
+                                        >
                                             {cell.render('Cell')}
                                         </TableCell>
                                     );
