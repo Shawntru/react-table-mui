@@ -1,4 +1,3 @@
-/* eslint-disable no-debugger */
 /* eslint-disable react/jsx-key */
 import React, { useCallback, useMemo } from 'react';
 import clsx from 'clsx';
@@ -17,9 +16,11 @@ import { FixedSizeList as List } from 'react-window';
 // AutoSizer allows full height/width to be used on the virtualized table
 import AutoSizer from "react-virtualized-auto-sizer";
 
+// scrollbarWidth used to properly align and space columns used in virtualization
 import scrollbarWidth from './scrollbarWidth';
+
 import dataInterface from '../data/dataInterface';
-import mockData from '../data/mockData.json';
+import data from '../data/mockData.json';
 
 const useStyles = makeStyles((theme) => ({
     shipmentsTableWrapper: {
@@ -73,10 +74,6 @@ const useStyles = makeStyles((theme) => ({
 function TestTable() {
     const classes = useStyles();
 
-    // use this to adjust the length in rows of the rendered table for expirimentation. 200 is the max.
-    // Table starts to get laggy at above ~50 rows.
-    const data = mockData.slice(0, 200);
-
     // this is the default sizing for each column on render
     // these could be adjusted or even saved and then applied from user prefs
     const defaultColumn = useMemo(
@@ -88,7 +85,7 @@ function TestTable() {
         [],
     );
 
-    // used in our react-window virtuilization, this allows correct formatting for the table width
+    // used in our react-window virtuilization, this allows correct spacing for the table width
     const scrollBarSize = useMemo(() => scrollbarWidth(), []);
 
     // memoize the data so we aren't rerendering on table adjustments
@@ -109,7 +106,7 @@ function TestTable() {
     // Use the functions returned from useTable to build the UI
     // useResizeColumns enables use of resizing columns, along with defaultColumn
     //      to define the initial sizing and spacing
-    // totalColumnsWidth is necessary for using virtualization
+    // totalColumnsWidth is necessary for accurately spacing width while using virtualization
     // This is also the place to add necessary hooks to use from react-table
     const {
         getTableProps,
@@ -180,6 +177,7 @@ function TestTable() {
                 </TableHead>
 
                 <TableBody {...getTableBodyProps()}>
+                    {/* Ensure parent element of AutoSizer does not have a height of 0 or it will not function */}
                     <AutoSizer >
                         {/* DO NOT use AutoSizer width prop, it will missalign headers and columns when used with resizing */}
                         {({ height }) => (
