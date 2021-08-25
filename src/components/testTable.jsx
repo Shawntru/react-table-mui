@@ -12,7 +12,10 @@ import {
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { useResizeColumns, useTable, useBlockLayout } from 'react-table';
-import { FixedSizeList } from 'react-window';
+import { FixedSizeList as List } from 'react-window';
+
+// AutoSizer allows full height/width to be used on the virtualized table
+import AutoSizer from "react-virtualized-auto-sizer";
 
 import scrollbarWidth from './scrollbarWidth';
 import dataInterface from '../data/dataInterface';
@@ -23,8 +26,12 @@ const useStyles = makeStyles((theme) => ({
         width: '100%',
         height: '90vh',
         border: '2px solid rgba(0,0,0,.18)',
-        overflow: 'scroll',
+        overflowY: 'hidden',
+        overflowX: 'scroll',
         display: 'inline-block',
+    },
+    dataWrapper: {
+        height: '85vh'
     },
     tableHeader: {
         fontSize: '12px',
@@ -149,7 +156,7 @@ function TestTable() {
     return (
         <TableContainer className={classes.shipmentsTableWrapper}>
             <button onClick={resetResizing}>Reset Resizing</button>
-            <MaUTable {...getTableProps()}>
+            <MaUTable {...getTableProps()} className={classes.dataWrapper}>
 
                 <TableHead className={classes.tableHeader}>
                     {headerGroups.map((headerGroup) => (
@@ -173,14 +180,19 @@ function TestTable() {
                 </TableHead>
 
                 <TableBody {...getTableBodyProps()}>
-                    <FixedSizeList
-                        height={400}
-                        itemCount={rows.length}
-                        itemSize={35}
-                        width={totalColumnsWidth + scrollBarSize}
-                    >
-                        {RenderRow}
-                    </FixedSizeList>
+                    <AutoSizer >
+                        {/* DO NOT use AutoSizer width prop, it will missalign headers and columns when used with resizing */}
+                        {({ height }) => (
+                            <List
+                                height={height}
+                                itemCount={rows.length}
+                                itemSize={35}
+                                width={totalColumnsWidth + scrollBarSize}
+                            >
+                                {RenderRow}
+                            </List>
+                        )}
+                    </AutoSizer>
                 </TableBody>
 
             </MaUTable>
