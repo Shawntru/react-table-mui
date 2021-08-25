@@ -31,7 +31,7 @@ Table was rendered with 20 columns and 200 rows. Modify `const data = mockData.s
 - `react-tables` v7.7 successfully integrated with MUI core v4.12
 - Ease of use for column resizing is very streamlined. `react-table` props can be easily spread into existing MUI elements. 
 - Enabling and disabling columns can easily be implemented ([link to API](https://react-table.tanstack.com/docs/examples/column-hiding))
-- Smoth operation through use of `react-window` and virtualization.
+- Smooth operation through use of `react-window` and virtualization.
 
 ### Cons
 ~~Resizing columns greater than 50 rows is still laggy, even utulizing the performance enhancing plugin hooks `react-table` offers such as `useAbsoluteLayout` and `useBlockLayout`~~
