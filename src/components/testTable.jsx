@@ -173,7 +173,6 @@ function TestTable() {
                 </TableHead>
 
                 <TableBody {...getTableBodyProps()}>
-
                     <FixedSizeList
                         height={400}
                         itemCount={rows.length}
@@ -182,27 +181,6 @@ function TestTable() {
                     >
                         {RenderRow}
                     </FixedSizeList>
-
-                    {/* {rows.map((row, i) => {
-                        prepareRow(row);
-                        return (
-                            <TableRow
-                                className={classes.tableRow}
-                                {...row.getRowProps()}
-                            >
-                                {row.cells.map((cell) => {
-                                    return (
-                                        <TableCell
-                                            className={classes.tableCell}
-                                            {...cell.getCellProps()}
-                                        >
-                                            {cell.render('Cell')}
-                                        </TableCell>
-                                    );
-                                })}
-                            </TableRow>
-                        );
-                    })} */}
                 </TableBody>
 
             </MaUTable>
