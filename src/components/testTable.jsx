@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import clsx from 'clsx';
 import {
     Table as MaUTable,
@@ -10,6 +10,8 @@ import {
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { useResizeColumns, useTable, useBlockLayout } from 'react-table';
+import { FixedSizeList } from 'react-window'
+
 import dataInterface from '../data/dataInterface';
 import mockData from '../data/mockData.json';
 
@@ -25,7 +27,7 @@ const useStyles = makeStyles((theme) => {
         tableHeader: {
             fontSize: '12px',
             lineHeight: '16px',
-            fontWeight: 600,
+            fontWeight: '600',
         },
         tableRow: {
             '&:nth-of-type(odd)': {
@@ -69,7 +71,7 @@ function TestTable() {
 
     // this is the default sizing for each column on render
     // these could be adjusted or even saved and then applied from user prefs
-    const defaultColumn = React.useMemo(
+    const defaultColumn = useMemo(
         () => ({
             minWidth: 30,
             width: 125,
@@ -77,6 +79,9 @@ function TestTable() {
         }),
         []
     );
+
+    // used in our react-window virtuilization, this allows correct formatting for the table width
+    const scrollBarSize = useMemo(() => scrollbarWidth(), [])
 
     // memoize the data so we aren't rerendering on table adjustments
     const columns = useMemo(
@@ -98,6 +103,7 @@ function TestTable() {
     // use the functions returned from useTable to build the UI
     // useResizeColumns enables use of resizing columns, along with defaultColumn
     // to define the initial sizing and spacing
+    // This is also the place to add necessary hooks to use from react-table
     const {
         getTableProps,
         headerGroups,
@@ -114,6 +120,32 @@ function TestTable() {
         useBlockLayout,
         useResizeColumns
     );
+
+    // Used for virtualizing our rows using react-window
+    // Essentially this is what would originally be in our JSX render return
+    const RenderRow = useCallback(
+        ({ index, style }) => {
+            const row = rows[index]
+            prepareRow(row)
+            return (
+                <div
+                    {...row.getRowProps({
+                        style,
+                    })}
+                    className={classes.tableRow}
+                >
+                    {rows.cells.map((cell) => {
+                        return (
+                            <div {...cell.getCellProps()} className={classes.tableCell}>
+                                {cell.render('Cell')}
+                            </div>
+                        )
+                    })}
+                </div>
+            )
+        },
+        [prepareRow, rows]
+    )
 
     return (
         <TableContainer className={classes.shipmentsTableWrapper}>
@@ -142,7 +174,17 @@ function TestTable() {
                 </TableHead>
 
                 <TableBody {...getTableBodyProps()}>
-                    {rows.map((row, i) => {
+
+                    <FixedSizeList
+                        height={400}
+                        itemCount={rows.length}
+                        itemSize={35}
+                        width={totalColumnsWidth + scrollBarSize}
+                    >
+                        {RenderRow}
+                    </FixedSizeList>
+
+                    {/* {rows.map((row, i) => {
                         prepareRow(row);
                         return (
                             <TableRow
@@ -161,7 +203,7 @@ function TestTable() {
                                 })}
                             </TableRow>
                         );
-                    })}
+                    })} */}
                 </TableBody>
 
             </MaUTable>
